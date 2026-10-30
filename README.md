@@ -1,4 +1,3 @@
-
 # Tema 4: Consultas Avançadas, Filtros e Otimização de Performance
 
 ## Integrantes e contribuições
@@ -62,8 +61,7 @@ Em um cadastro de funcionários, por exemplo, podemos ordenar os salários do me
 
 Esses recursos ajudam a tornar as consultas mais organizadas e adequadas ao que o usuário precisa visualizar.
 
-### 3. Agrupamento e operações de agregação
-
+ Agrupamento e operações de agregação
 O agrupamento permite reunir registros que possuem alguma característica em comum. Já as funções de agregação realizam cálculos sobre esses registros.
 
 | Recurso | Descrição |
@@ -76,6 +74,14 @@ O agrupamento permite reunir registros que possuem alguma característica em com
 Essas funcionalidades podem ser usadas para descobrir quantos funcionários existem em cada departamento, identificar departamentos com mais de um funcionário e calcular a soma dos salários de cada setor.
 
 Dessa maneira, o banco de dados também pode ser utilizado para produzir informações úteis para análises e relatórios.
+
+### 3. Seleção de campos e uso eficiente dos dados
+
+Carregar todas as informações disponíveis nem sempre é necessário. Quando uma consulta precisa apenas do nome e do salário de um funcionário, por exemplo, os outros campos podem ser dispensáveis.
+
+O Peewee permite definir os campos desejados com `select()`. Outros ORMs, como o Django, disponibilizam recursos como `only()` para controlar quais campos serão carregados.
+
+Essa abordagem pode diminuir a quantidade de dados processados e transferidos. É importante, porém, selecionar os campos considerando as informações que serão realmente utilizadas pelo programa.
 
 ### 4. O problema N+1 Queries
 
@@ -91,14 +97,6 @@ Para reduzir esse problema, o Peewee oferece duas alternativas importantes:
 - `prefetch()`: busca antecipadamente os registros relacionados, evitando consultas individuais durante o acesso aos objetos.
 
 Embora ambas as técnicas possam reduzir consultas repetidas, a escolha depende da estrutura dos dados e do resultado que precisamos obter.
-
-### 5. Seleção de campos e uso eficiente dos dados
-
-Carregar todas as informações disponíveis nem sempre é necessário. Quando uma consulta precisa apenas do nome e do salário de um funcionário, por exemplo, os outros campos podem ser dispensáveis.
-
-O Peewee permite definir os campos desejados com `select()`. Outros ORMs, como o Django, disponibilizam recursos como `only()` para controlar quais campos serão carregados.
-
-Essa abordagem pode diminuir a quantidade de dados processados e transferidos. É importante, porém, selecionar os campos considerando as informações que serão realmente utilizadas pelo programa.
 
 ---
 
