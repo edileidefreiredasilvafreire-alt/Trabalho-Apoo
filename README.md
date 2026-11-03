@@ -102,42 +102,40 @@ Embora ambas as técnicas possam reduzir consultas repetidas, a escolha depende 
 
 ##  Desenvolvimento da prática
 
-Para aplicar os conteúdos, foi proposta uma aplicação de cadastro de funcionários organizada em duas tabelas relacionadas.
+Para aplicar os conteúdos, foi proposta uma aplicação de emprestimo de livros organizada em duas tabelas relacionadas.
 
 ### Estrutura do banco de dados
 
-**Tabela `Departamento`**
+**Tabela `Autor`**
 
-Armazena os setores de uma empresa.
-
-Campos principais:
-- `id`: identificador do departamento.
-- `nome`: nome do setor.
-
-**Tabela `Funcionario`**
-
-Registra os funcionários vinculados aos departamentos.
+Contém os autores dos livros.
 
 Campos principais:
-- `id`: identificador do funcionário.
-- `nome`: nome do funcionário.
-- `idade`: idade do funcionário.
-- `salario`: salário cadastrado.
-- `departamento`: referência ao departamento ao qual pertence.
+- `nome`: nome do autor.
 
-A relação entre as tabelas é feita por uma chave estrangeira. Assim, vários funcionários podem pertencer ao mesmo departamento.
+**Tabela `Livros`**
+
+Armazena os livros da biblioteca.
+
+Campos principais:
+- `titulo`: o titulo do livro.
+- `autor`: o autor do livro, chave estrangeira.
+
+
+A relação entre as tabelas é feita por uma chave estrangeira.
 
 ### Dados utilizados nos testes
 
-A prática pode começar com três departamentos:
+A prática pode começar com quatro livros:
 
-- Tecnologia
-- Financeiro
-- Recursos Humanos
+- mensagem
+- a nuvem
+- A Hora da Estrela
+- o ceifador
 
-Também serão cadastrados oito funcionários distribuídos entre esses setores.
+Também serão cadastrados quatro autores distribuídos entre os livros.
 
-Os registros servem de base para testar os métodos do Peewee, permitindo consultar funcionários por idade, pesquisar nomes, ordenar salários, contar funcionários por departamento e somar os salários de cada setor.
+Os registros servem de base para testar os métodos do Peewee, permitindo consultar livros por titulo ou autor, pesquisar titulos, ordenar por ordem alfabética, contar livros por autores e somar os livros de cada autor.
 
 Para evitar duplicações, o programa pode verificar se os dados iniciais já existem antes de inseri-los.
 
@@ -145,14 +143,14 @@ Para evitar duplicações, o programa pode verificar se os dados iniciais já ex
 
 A aplicação deverá demonstrar as seguintes operações:
 
-1. Buscar funcionários que atendam a condições específicas.
-2. Pesquisar nomes utilizando `contains()` e `startswith()`.
-3. Ordenar funcionários por nome, idade ou salário.
+1. Buscar livros que atendam a condições específicas.
+2. Pesquisar titulos utilizando `contains()` e `startswith()`.
+3. Ordenar livros por nome do livro ou dos autores.
 4. Dividir os registros em páginas com `paginate()`.
 5. Selecionar apenas os campos necessários.
-6. Contar os funcionários de cada departamento.
-7. Somar os salários agrupados por departamento.
-8. Comparar o acesso aos departamentos usando diferentes estratégias de consulta.
+6. Contar os livros de cada autor.
+7. Somar os livros agrupados por autores.
+8. Comparar o acesso aos livrosr usando diferentes estratégias de consulta.
 
 ### Comparação das estratégias
 
@@ -160,15 +158,15 @@ Para analisar o problema N+1, serão executados três testes:
 
 **Teste 1 — Consulta sem otimização**
 
-Os funcionários são carregados inicialmente e seus departamentos são acessados individualmente. Isso pode gerar consultas extras ao banco de dados.
+Os livros são carregados inicialmente e seus autores são acessados individualmente. Isso pode gerar consultas extras ao banco de dados.
 
 **Teste 2 — Consulta com `join()`**
 
-Os funcionários e seus departamentos são recuperados por meio de uma junção SQL, permitindo acessar as informações relacionadas sem uma consulta adicional para cada funcionário.
+Os livros e seus departamentos são recuperados por meio de uma junção SQL, permitindo acessar as informações relacionadas sem uma consulta adicional para cada funcionário.
 
 **Teste 3 — Consulta com `prefetch()`**
 
-Os dados dos funcionários e dos departamentos são carregados antecipadamente, reduzindo a necessidade de consultas individuais.
+Os dados dos livros e dos autores são carregados antecipadamente, reduzindo a necessidade de consultas individuais.
 
 O tempo de cada teste pode ser medido com `time.perf_counter()`. Para contar as consultas, podemos utilizar um contador próprio que acompanhe a execução de comandos SQL.
 
@@ -194,7 +192,7 @@ python pratica.py
 
 O programa deverá criar o banco SQLite automaticamente, cadastrar os dados iniciais quando necessário e executar as consultas demonstrativas.
 
-O nome do arquivo do banco poderá ser `empresa.db`, separando essa prática da atividade anterior.
+O nome do arquivo do banco poderá ser `pratica.db`, separando essa prática da atividade anterior.
 
 ---
 
@@ -204,15 +202,15 @@ O objetivo da comparação é verificar como a quantidade de consultas SQL e o t
 
 | Estratégia | Consultas SQL | Tempo de execução |
 |---|---:|---:|
-| Sem otimização | A medir | A medir |
-| Com `join()` | A medir | A medir |
-| Com `prefetch()` | A medir | A medir |
+| Sem otimização | 5 | 0.0044 |
+| Com `join()` | 1 | 0.0009 |
+| Com `prefetch()` | 2 | 0.0043 |
 
 Os resultados devem ser preenchidos após executar o programa com os dados cadastrados.
 
 ### Como interpretar os resultados
 
-Na consulta sem otimização, a quantidade de consultas pode aumentar conforme o número de funcionários, caso o acesso a cada departamento provoque uma nova busca.
+Na consulta sem otimização, a quantidade de consultas pode aumentar conforme o número de livros, caso o acesso a cada departamento provoque uma nova busca.
 
 Com `join()`, os dados relacionados podem ser obtidos em uma única consulta SQL, quando a consulta é estruturada dessa forma.
 
@@ -238,4 +236,4 @@ Por fim, a prática com departamentos e funcionários demonstra como esses conce
 
 **Tema:** Consultas Avançadas, Filtros e Otimização de Performance
 
-**Bibliotecas principais:** Python, Peewee e SQLite.
+**Bibliotecas principais:** Python, logging, Peewee e SQLite.

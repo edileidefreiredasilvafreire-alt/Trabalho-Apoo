@@ -4,7 +4,6 @@ import time
 import logging
 
 logger = logging.getLogger('peewee')
-logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
 db = SqliteDatabase('biblioteca.db')
@@ -36,23 +35,14 @@ class Livro(BaseModel):
         backref='livros'
     )
 
-class Emprestimo(BaseModel):
-    leitor = CharField()
 
-    livro = ForeignKeyField(
-        Livro,
-        backref='emprestimos'
-    )
-
-    data = DateField()
-    devolvido = BooleanField(default=False)
 
 db.connect()
 db.create_tables([Autor, Livro, Emprestimo])
 
 Autor.delete().execute()
 Livro.delete().execute()
-Emprestimo.delete().execute()
+
 
 # autores
 fernando = Autor.create(
@@ -88,31 +78,12 @@ livro4 = Livro.create(
     autor=neal
 )
 
-#emprestimo
-
-Emprestimo.create(
-    leitor='João',
-    livro=livro1,
-    data=date(2026, 10, 10)
-)
-
-Emprestimo.create(
-    leitor='Maria',
-    livro=livro3,
-    data=date(2026, 10, 12)
-)
-
-Emprestimo.create(
-    leitor='Pedro',
-    livro=livro2,
-    data=date(2026, 10, 15)
-)
-
 
 #SEM OTIMIZAÇÃO
 contador = ContadorSQL()
 logger.addHandler(contador)
 
+print("\nSEM OTIMIZAÇÃO")
 inicio = time.perf_counter()
 livros = Livro.select()
 
@@ -121,7 +92,6 @@ for livro in livros:
 
 fim = time.perf_counter()
 
-print("\nSEM OTIMIZAÇÃO")
 print("Consultas:", contador.quantidade)
 print("Tempo:", fim - inicio, "segundos")
 
@@ -132,6 +102,7 @@ logger.removeHandler(contador)
 contador = ContadorSQL()
 logger.addHandler(contador)
 
+print("\nCOM PREFETCH")
 inicio = time.perf_counter()
 
 livros = prefetch(
@@ -144,7 +115,6 @@ for livro in livros:
 
 fim = time.perf_counter()
 
-print("\nCOM PREFETCH")
 print("Consultas:", contador.quantidade)
 print("Tempo:", fim - inicio, "segundos")
 
@@ -154,6 +124,7 @@ logger.removeHandler(contador)
 # TESTE COM JOIN()
 contador = ContadorSQL()
 logger.addHandler(contador)
+print("\nCOM JOIN")
 inicio = time.perf_counter()
 livros = (
     Livro
@@ -166,7 +137,6 @@ for livro in livros:
 
 fim = time.perf_counter()
 
-print("\nCOM JOIN")
 print("Consultas:", contador.quantidade)
 print("Tempo:", fim - inicio, "segundos")
 
