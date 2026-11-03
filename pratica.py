@@ -4,7 +4,6 @@ import time
 import logging
 
 logger = logging.getLogger('peewee')
-logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
 db = SqliteDatabase('biblioteca.db')
@@ -113,6 +112,7 @@ Emprestimo.create(
 contador = ContadorSQL()
 logger.addHandler(contador)
 
+print("\nSEM OTIMIZAÇÃO")
 inicio = time.perf_counter()
 livros = Livro.select()
 
@@ -121,7 +121,6 @@ for livro in livros:
 
 fim = time.perf_counter()
 
-print("\nSEM OTIMIZAÇÃO")
 print("Consultas:", contador.quantidade)
 print("Tempo:", fim - inicio, "segundos")
 
@@ -132,6 +131,7 @@ logger.removeHandler(contador)
 contador = ContadorSQL()
 logger.addHandler(contador)
 
+print("\nCOM PREFETCH")
 inicio = time.perf_counter()
 
 livros = prefetch(
@@ -144,7 +144,6 @@ for livro in livros:
 
 fim = time.perf_counter()
 
-print("\nCOM PREFETCH")
 print("Consultas:", contador.quantidade)
 print("Tempo:", fim - inicio, "segundos")
 
@@ -154,6 +153,7 @@ logger.removeHandler(contador)
 # TESTE COM JOIN()
 contador = ContadorSQL()
 logger.addHandler(contador)
+print("\nCOM JOIN")
 inicio = time.perf_counter()
 livros = (
     Livro
@@ -166,7 +166,6 @@ for livro in livros:
 
 fim = time.perf_counter()
 
-print("\nCOM JOIN")
 print("Consultas:", contador.quantidade)
 print("Tempo:", fim - inicio, "segundos")
 
